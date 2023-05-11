@@ -1,2 +1,1 @@
-scipion-em
 outdated==0.2.2

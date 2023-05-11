@@ -37,7 +37,6 @@ from os.path import join, exists, islink, abspath
 from subprocess import STDOUT, call
 
 from pyworkflow import Config
-import pwem
 
 
 # Then we get some OS vars
@@ -45,6 +44,13 @@ MACOSX = (platform.system() == 'Darwin')
 WINDOWS = (platform.system() == 'Windows')
 LINUX = (platform.system() == 'Linux')
 VOID_TGZ = "void.tgz"
+
+# CUDA
+CUDA_LIB_VAR = 'CUDA_LIB'
+
+# CUDA
+CUDA_LIB = Config._get(CUDA_LIB_VAR, '/usr/local/cuda/lib64')
+CUDA_BIN = Config._get('CUDA_BIN', '/usr/local/cuda/bin')
 
 
 def ansi(n):
@@ -319,12 +325,12 @@ class Environment:
         return os.path.join(mkdir(Environment.getSoftware('log')), *path)
 
     @staticmethod
-    def getEmFolder():
-        return mkdir(pwem.Config.EM_ROOT)
+    def getSoftwareFolder():
+        return mkdir(Config.SCIPION_SOFTWARE)
 
     @staticmethod
-    def getEm(name):
-        return '%s/%s' % (Environment.getEmFolder(), name)
+    def getSoftware(name):
+        return '%s/%s' % (Environment.getSoftwareFolder(), name)
 
     def getTargetList(self):
         return self._targetList
@@ -634,7 +640,7 @@ class Environment:
         buildDir = self._getBuildDir(kwargs, tar)
         targetDir = kwargs.get('targetDir', buildDir)
 
-        libArgs = {'downloadDir': self.getEmFolder(),
+        libArgs = {'downloadDir': self.getSoftwareFolder(),
                    'urlSuffix': 'em',
                    'default': False,
                    'buildDir': buildDir}  # This will be updated with value in kwargs
@@ -658,9 +664,9 @@ class Environment:
                               final=True, environ=environ)
 
         target.addCommand(Command(self, Link(extName, targetDir),
-                                  targets=[self.getEm(extName),
-                                           self.getEm(targetDir)],
-                                  cwd=self.getEm('')),
+                                  targets=[self.getSoftware(extName),
+                                           self.getSoftware(targetDir)],
+                                  cwd=self.getSoftware('')),
                           final=True)
 
         # Create an alias with the name for that version
@@ -734,7 +740,7 @@ class Environment:
         """ Return true if the package-version seems to be installed. """
         pydir = self.getPythonPackagesFolder()
         extName = self._getExtName(name, version)
-        return (exists(join(self.getEmFolder(), extName)) or
+        return (exists(join(self.getSoftwareFolder(), extName)) or
                 extName in [x[:len(extName)] for x in os.listdir(pydir)])
 
     def printHelp(self):
@@ -791,8 +797,8 @@ class Environment:
         cudaBin = os.environ.get(packUpper + '_CUDA_BIN')
 
         if cudaLib is None:
-            cudaLib = pwem.Config.CUDA_LIB
-            cudaBin = pwem.Config.CUDA_BIN
+            cudaLib = CUDA_LIB
+            cudaBin = CUDA_BIN
 
         environ = os.environ.copy()
 

@@ -314,10 +314,8 @@ def main():
     elif mode == MODE_VERSION:
         # Print main packages version
         import pyworkflow
-        import pwem
 
         print("pyworkflow - %s" % pyworkflow. __version__)
-        print("pwem - %s" % pwem.__version__)
         # Just exit, Scipion version will be printed anyway
         sys.exit(0)
 
@@ -363,17 +361,6 @@ def main():
         # Remove one arg
         sys.argv = sys.argv[1:]
         launchKickoff()
-
-    # Allow to run programs from different packages
-    # scipion will load the specified environment
-    elif (mode.startswith('xmipp') or
-          mode.startswith('relion') or
-          mode.startswith('e2') or
-          mode.startswith('sx') or
-          mode.startswith('b')):
-        # To avoid Ghost activation warning
-        from pwem import EM_PROGRAM_ENTRY_POINT
-        runCmd(EM_PROGRAM_ENTRY_POINT, sys.argv[1:])
 
     elif mode == MODE_INSPECT:
         runScript(join(Vars.SCIPION_INSTALL, 'inspect_plugins.py'), sys.argv[2:])

@@ -7,7 +7,10 @@ import pkg_resources
 from pkg_resources import parse_version
 
 from .funcs import Environment
-from pwem import Domain
+try:
+    from pwem import Domain
+except ModuleNotFoundError:
+    from pyworkflow.plugin import Domain
 from pyworkflow.utils import redStr, yellowStr
 from pyworkflow.utils.path import cleanPath
 from pyworkflow import LAST_VERSION, CORE_VERSION, OLD_VERSIONS, Config
@@ -178,7 +181,7 @@ class PluginInfo(object):
         if binList is None:
             binList = self.binVersions
 
-        binFolder = Environment.getEmFolder()
+        binFolder = Environment.getSoftwareFolder()
         for binVersion in binList:
             f = os.path.join(binFolder, binVersion)
             if os.path.exists(f):

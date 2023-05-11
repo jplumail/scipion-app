@@ -33,9 +33,14 @@ import inspect
 import traceback
 from collections import OrderedDict
 
-from pwem.protocols import (Prot3D, Prot2D, ProtParticles,
-                            ProtMicrographs, ProtImport)
-from pwem import Domain
+try:
+    from pwem.protocols import (Prot3D, Prot2D, ProtParticles,
+                                ProtMicrographs, ProtImport)
+    from pwem import Domain
+    SCIPION_EM_INSTALLED = True
+except ModuleNotFoundError:
+    from pyworkflow.plugin import Domain
+    SCIPION_EM_INSTALLED = False
 from pyworkflow.protocol import Protocol
 import pyworkflow.utils as pwutils
 
@@ -141,11 +146,14 @@ elif n > 2:
         pluginName = sys.argv[1]
         showBase = True if (n == 4 and sys.argv[3] == '--showBase') else False
         subclasses = {}
-        emCategories = [('Imports', ProtImport),
-                        ('Micrographs', ProtMicrographs),
-                        ('Particles', ProtParticles),
-                        ('2D', Prot2D),
-                        ('3D', Prot3D)]
+        if SCIPION_EM_INSTALLED:
+            emCategories = [('Imports', ProtImport),
+                            ('Micrographs', ProtMicrographs),
+                            ('Particles', ProtParticles),
+                            ('2D', Prot2D),
+                            ('3D', Prot3D)]
+        else:
+            emCategories = []
 
         plugin = Domain.getPlugin(pluginName)
         version = PluginInfo('scipion-em-%s' % pluginName).pipVersion
