@@ -74,9 +74,9 @@ class UpdateManager:
     import pwfluo
     import scipion
 
-    packageNames = [('scipion-pyworkflow', pyworkflow.__version__),
+    packageNames = [('scipion-pyworkflow-windows', pyworkflow.__version__),
                     ('scipion-em', pwfluo.__version__),
-                    ('scipion-app', scipion.__version__)]
+                    ('scipion-app-spfluo', scipion.__version__)]
 
     @classmethod
     def getPackagesStatus(cls, printAll=True):

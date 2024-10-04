@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
-name = "scipion-app"
-version = "0.0.1"  # version is wrong
-description = "Scipion application. For processing cryo electron microscopy images and hybrid modelling"
+name = "scipion-app-spfluo"
+dynamic = ["version"]
+description = "Scipion application. For processing cryo electron microscopy images and hybrid modelling. Fork for the needs of spfluo-app."
 readme = "README.rst"
 requires-python = ">=3.6"
 keywords = ["scipion", "imageprocessing", "scipion-3.0"]
@@ -36,8 +36,19 @@ scipion = "scipion.__main__:main"
 [project.entry-points."pyworkflow.guiplugin"]
 guiplugin = "scipion.guiplugin"
 
-[tool.setuptools.package-data]
-"scipion" = ["templates/*.template", "templates/*.json"]
+[tool.hatch.build]
+include = [
+    "scipion/templates/*.template",
+    "scipion/templates/*.json"
+]
+
+
+[tool.hatch.version]
+source = "vcs"
+raw-options = { root = "../.." }
+
+[tool.hatch.build.hooks.vcs]
+version-file = "scipion/_version.py"
 
 [tool.uv.sources]
 scipion-fluo = {workspace = true}
