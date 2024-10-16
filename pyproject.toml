@@ -36,12 +36,8 @@ scipion = "scipion.__main__:main"
 [project.entry-points."pyworkflow.guiplugin"]
 guiplugin = "scipion.guiplugin"
 
-[tool.hatch.build]
-include = [
-    "scipion/templates/*.template",
-    "scipion/templates/*.json"
-]
-
+[tool.hatch.build.targets.wheel]
+packages = ["scipion"]
 
 [tool.hatch.version]
 source = "vcs"
